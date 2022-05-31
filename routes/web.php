@@ -18,3 +18,16 @@ Route::get('/', function () {
 });
 
 Route::get('/tarefas', [App\Http\Livewire\ListaTarefas::class, 'index'])->name('tarefas');
+
+Route::get('/carteira', function () {
+    return view('carteira.carteira-index');
+});
+
+Route::get('/categoria', function () {
+    return view('categoria.categoria-index');
+});
+
+Route::get('/lancamento', function () {
+    return view('lancamento.lancamento-index');
+});
+
