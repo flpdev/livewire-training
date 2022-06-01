@@ -14,6 +14,7 @@
                     <tr>
                         <th>#</th>
                         <th>Descrição Carteira</th>
+                        <th>Situação</th>
                         <th>Ação</th>
                     </tr>
                 </thead>
@@ -24,9 +25,19 @@
                             <td>{{$key+1}}</td>
                             <td>{{$carteira->descricao}}</td>
                             <td>
-                                <button wire:click="deleteCarteira({{$carteira->id}})" class="btn btn-secondary"
+                                @switch($carteira->status)
+                                @case(1)
+                                Ativo
+                                @break
+                                @case(0)
+                                Inativo
+                                @break
+                                @endswitch
+                            </td>
+                            <td>
+                                <button wire:click="editCarteira({{$carteira->id}})" class="btn btn-secondary"
                                     type="button">Editar</button>
-                                <button wire:click="createCarteira({{$carteira->id}})" class="btn btn-danger"
+                                <button wire:click="deleteCarteira({{$carteira->id}})" class="btn btn-danger"
                                     type="button">Excluir</button>
                             </td>
                         </tr>
@@ -38,32 +49,42 @@
     </div>
 
     <!-- Modal -->
-    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div wire:ignore.self class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Cadastrar Nova Carteira</h5>
+                    <h5 class="modal-title" id="exampleModalLabel">{{$tituloModal}}</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form action="" >
+                    <form wire:submit.prevent="{{$actionForm}}">
                         <div class="form-group">
                             <label for="descricao" class="control-label">Descrição</label>
-                            <input wire:model="descricao" type="text" name="descricao" id="descricao" class="form-control">
+                            <input wire:model="idCarteira" type="hidden" name="idCarteira" id="idCarteira">
+                            <input wire:model="descricao" type="text" name="descricao" id="descricao"
+                                class="form-control">
+                            @error('descricao')
+                            <span class="text-danger" style="font-size: 11.5px;">{{$message}}</span>
+                            @enderror
                         </div>
                         <div class="form-group">
                             <label for="status" class="control-label">Situação</label>
                             <select wire:model="status" name="status" id="status" class="form-select">
-                                <option value="1">Ativo</option>
-                                <option value="0">Inativo</option>
+                                <option value=""  selected disable>Selecione</option>
+                                <option value="1" @if(isset($sitaucao)) selected @endif>Ativo</option>
+                                <option value="0" @if(isset($sitaucao)) selected @endif>Inativo</option>
                             </select>
+                            @error('status')
+                            <span class="text-danger" style="font-size: 11.5px;">{{$message}}</span>
+                            @enderror
                         </div>
-                    </form>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
-                    <button type="button" class="btn btn-primary">Salvar</button>
+                    <button type="submit" class="btn btn-primary">Salvar</button>
                 </div>
+                </form>
             </div>
         </div>
     </div>
@@ -75,6 +96,10 @@
     window.addEventListener('showModal', event => {
         $('#exampleModal').modal('show');
     });
+
+    window.addEventListener('hideModal', event => {
+        $('#exampleModal').modal('hide');
+    })
 
 </script>
 @endsection

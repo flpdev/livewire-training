@@ -7,6 +7,7 @@
         Carteiras
     </h1>
     <hr>
+    
     <div>
         @livewire('carteira')
     </div>
